@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "508265508948",
+    "project_id": "stress-go-e33f7",
+    "storage_bucket": "stress-go-e33f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508265508948:android:aef358d9020658d2733dc1",
+        "android_client_info": {
+          "package_name": "com.example.stress_go"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_rArdXcQLf58U9BbX-xsI1MgM29zmjM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
