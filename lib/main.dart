@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // Import the login screen
+import 'auth/login_screen.dart'; // Import the login screen
 
 void main()async {
   // Connets your flutter project with firebase
