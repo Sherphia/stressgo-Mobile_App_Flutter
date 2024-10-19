@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stress_go/auth/auth_service.dart';
 import 'package:stress_go/auth/signup_screen.dart';
 import 'package:stress_go/home_screen.dart';
@@ -19,13 +17,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-   @override
+  @override
   void dispose() {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _login,  // Handle email and password login() 
+                    onPressed: _login, // Handle email and password login
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       backgroundColor: Colors.white,
@@ -116,34 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Social sign-in buttons
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // Google Sign-In logic
-                    },
-                    icon: SvgPicture.asset('assets/google_icon.svg', width: 20),
-                    label: const Text('Sign in with Google'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.blueAccent,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Other social buttons remain the same...
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // Microsoft Sign-In logic
-                    },
-                    icon: SvgPicture.asset('assets/microsoft_icon.svg', width: 20),
-                    label: const Text('Sign in with Microsoft'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                  // Removed Social sign-in buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -176,14 +146,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  goToHome(BuildContext context) => Navigator.push(
+
+  void goToHome(BuildContext context) => Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
 
-  _login() async {
-    final user =
-        await _auth.loginUserWithEmailAndPassword(_emailController.text, _passwordController.text);
+  Future<void> _login() async {
+    final user = await _auth.loginUserWithEmailAndPassword(
+      _emailController.text, 
+      _passwordController.text,
+    );
 
     if (user != null) {
       log("User Logged In");
