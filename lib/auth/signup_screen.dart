@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:stress_go/auth/auth_service.dart';
+import 'package:stress_go/home_screen.dart';
 import 'login_screen.dart'; // Import your login screen
 
 class SignUpScreen extends StatefulWidget {
@@ -9,6 +13,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class SignUpScreenState extends State<SignUpScreen> {
+  final _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -134,11 +139,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         // Sign Up Button
                         Center(
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // Handle sign-up logic here
-                              }
-                            },
+                            onPressed: _signup,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 50, vertical: 15),
@@ -198,5 +199,20 @@ class SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  goToHome(BuildContext context) => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+
+  _signup() async {
+    final user =
+        await _auth.createUserWithEmailAndPassword(_emailController.text, _passwordController.text);
+    if (user != null) {
+      log("User Created Succesfully");
+      // ignore: use_build_context_synchronously
+      goToHome(context);
+    }
   }
 }

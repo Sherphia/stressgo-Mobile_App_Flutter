@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:stress_go/auth/auth_service.dart';
 import 'package:stress_go/auth/signup_screen.dart';
+import 'package:stress_go/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = AuthService();
+  
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -93,9 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      // Handle email and password login
-                    },
+                    onPressed: _login,  // Handle email and password login() 
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       backgroundColor: Colors.white,
@@ -171,5 +175,20 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  goToHome(BuildContext context) => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+
+  _login() async {
+    final user =
+        await _auth.loginUserWithEmailAndPassword(_emailController.text, _passwordController.text);
+
+    if (user != null) {
+      log("User Logged In");
+      // ignore: use_build_context_synchronously
+      goToHome(context);
+    }
   }
 }
