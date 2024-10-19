@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stress_go/auth/auth_service.dart';
 import 'package:stress_go/auth/signup_screen.dart';
 import 'package:stress_go/home_screen.dart';
@@ -12,10 +13,48 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  
   final _auth = AuthService();
   
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  int streakCount = 0; // Variable to hold the streak count
+  String lastLoginDate = '';
+
+  @override
+  void initState() {
+    super.initState();
+    loadStreakCount();
+  }
+
+  // Load streak count and last login date from shared preferences
+  Future<void> loadStreakCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      streakCount = prefs.getInt('streak_count') ?? 0; // Load streak count
+      lastLoginDate = prefs.getString('last_login_date') ?? ''; // Load last login date
+    });
+  }
+
+  // Update the streak count based on the last login date
+  Future<void> updateStreak() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    DateTime lastLogin = DateTime.tryParse(lastLoginDate) ?? DateTime.now().subtract(const Duration(days: 1));
+
+    // Check if the last login date is today
+    if (DateTime.now().difference(lastLogin).inDays >= 1) {
+      // Increase streak count
+      setState(() {
+        streakCount += 1; // Increase streak count by 1
+      });
+    }
+
+    // Update the last login date
+    lastLoginDate = DateTime.now().toIso8601String();
+    await prefs.setString('last_login_date', lastLoginDate);
+    await prefs.setInt('streak_count', streakCount); // Save updated streak count
+  }
 
   @override
   void dispose() {
