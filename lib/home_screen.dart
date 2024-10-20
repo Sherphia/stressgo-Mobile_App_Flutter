@@ -1,9 +1,12 @@
+import 'package:flutter_svg/svg.dart';
+
 import 'auth/auth_service.dart';
-import 'auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';  // For stylish fonts
-import 'package:lottie/lottie.dart';  // For GIF-like animations
-import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';  // For streak display
+import 'package:lottie/lottie.dart';
+
+import 'auth/login_screen.dart';  // For GIF-like animations
+// For streak display
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -81,11 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          'assets/fire.svg', // Your fire icon image
-                          width: 50, // Set desired width for the icon
-                          height: 50, // Set desired height for the icon
-                        ),
+                        SvgPicture.asset(
+                              'assets/fire.svg', // Your SVG file path
+                              width: 50, // Set desired width for the icon
+                              height: 50, // Set desired height for the icon
+                            ),
                         const SizedBox(width: 10), // Add spacing
                         Text(
                           "$streakCount", // Display the streak count
@@ -252,9 +255,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Change theme
                 },
               ),
-              const ListTile(
-                title: Text("Stress_go", style: TextStyle(color: Colors.grey)),
-              ),
+              TextButton(
+                    onPressed: () async {
+                      await auth.signout();  // Call the signout method
+                      // Optionally, navigate back to the login screen
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => const LoginScreen()), // Make sure to import your LoginScreen
+                      );
+                    },
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(color: Colors.red, fontSize: 18), // Customize the text style
+                    ),
+                  ),
             ],
           ),
         );
