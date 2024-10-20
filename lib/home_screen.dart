@@ -212,6 +212,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+          // Chat icon at the bottom right corner
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: GestureDetector(
+              onTap: () {
+                // Action to open chat
+              },
+              child: Lottie.asset(
+              'assets/chatbot.json', // Path to your chatbot animation JSON file
+                width: 60, // Set the width of the chat icon
+                height: 60, // Set the height of the chat icon
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -232,19 +247,6 @@ class _HomeScreenState extends State<HomeScreen> {
             textStyle: const TextStyle(fontSize: 18),
           ),
           child: const Text('More Exercises'),
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            // Open chat with bot or assistant
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.deepPurpleAccent,
-            backgroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-            textStyle: const TextStyle(fontSize: 18),
-          ),
-          child: const Text('Chat with Assistant'),
         ),
         const SizedBox(height: 20),
       ],
@@ -303,11 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(color: Color.fromARGB(255, 249, 77, 64),
-                  fontWeight: FontWeight.bold,fontSize: 18),
-                ),
+                child: const Text("Logout", style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
