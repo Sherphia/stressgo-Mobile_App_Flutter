@@ -64,6 +64,7 @@ flutter:
     - assets/microsoft_icon.svg
     - assets/meditating_girl.json
     - assets/breathing_test.gif
+    - assets/music.gif
     - assets/scroll_down_gif.json
     - assets/profile.png
     - assets/fire.svg
