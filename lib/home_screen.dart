@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int streakCount = 5; // Example streak count
   int heartRate = 72; // Simulated heart rate
   bool isExpanded = false; // For scroll-down functionality
+  final ScrollController _scrollController = ScrollController(); // Create a ScrollController
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           // Main content
           SingleChildScrollView(
+            controller: _scrollController, // Assign the ScrollController
             child: Column(
               children: [
                 const SizedBox(height: 20),
@@ -96,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10), // Add spacing
+                    const SizedBox(height: 2), // Add spacing
                     Text(
                       "Days Logged In",
                       style: GoogleFonts.poppins(
@@ -106,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 1),
                 // Meditating girl GIF
                 GestureDetector(
                   onTap: () {
@@ -114,86 +116,98 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Lottie.asset(
                     'assets/meditating_girl.json', // Place a meditating girl GIF/animation file here
-                    height: 200, // Adjust height as needed
+                    height: 190, // Adjust height as needed
                     width: 200,
                     fit: BoxFit.fill,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 1),
                 // Scroll down GIF button (placed between meditating girl and the row of GIFs)
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      isExpanded = !isExpanded;
+                      isExpanded = !isExpanded; // Toggle the expanded state
                     });
+                    // Scroll down to the next section when GIF is tapped
+                    if (isExpanded) {
+                      _scrollController.animateTo(
+                        _scrollController.position.pixels + 500, // Adjust scroll amount
+                        duration: const Duration(milliseconds: 350),
+                        curve: Curves.easeInOut,
+                      );
+                    }
                   },
                   child: Lottie.asset(
                     'assets/scroll_down_gif.json', // Place a scroll-down GIF/animation file here
-                    height: 200,
-                    width: 100,
+                    height: 70,
+                    width: 30,
                     fit: BoxFit.fill,
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Row for two GIF buttons with text below
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space them evenly
-                  children: [
-                    // First column: Breathing Test GIF and Text
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // Breathing Test functionality here
-                          },
-                          child: Image.asset(
-                            'assets/breathing_test.gif', // Your GIF file path
-                            width: 150, // Adjust size for each GIF
-                            height: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(height: 10), // Spacing between GIF and text
-                        const Text(
-                          'Breathing Test',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Second column: Music GIF and Text
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // Spotify integration functionality here
-                          },
-                          child: Image.asset(
-                            'assets/music.gif', // Path to your music GIF
-                            width: 150, // Adjust size for each GIF
-                            height: 150,
-                          ),
-                        ),
-                        const SizedBox(height: 10), // Spacing between GIF and text
-                        const Text(
-                          'Music',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                // Expandable section when scroll-down is clicked
+                // Expanded content when the scroll-down GIF is pressed
                 if (isExpanded)
-                  _expandedSection(), // Additional content when expanded
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space them evenly
+                        children: [
+                          // First column: Breathing Test GIF and Text
+                          Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  // Breathing Test functionality here
+                                },
+                                child: Image.asset(
+                                  'assets/breathing_test.gif', // Your GIF file path
+                                  width: 150, // Adjust size for each GIF
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(height: 10), // Spacing between GIF and text
+                              const Text(
+                                'Breathing Test',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Second column: Music GIF and Text
+                          Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  // Spotify integration functionality here
+                                },
+                                child: Image.asset(
+                                  'assets/music.gif', // Path to your music GIF
+                                  width: 150, // Adjust size for each GIF
+                                  height: 150,
+                                ),
+                              ),
+                              const SizedBox(height: 10), // Spacing between GIF and text
+                              const Text(
+                                'Music',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Additional content after scrolling down
+                      _expandedSection(),
+                    ],
+                  ),
                 const SizedBox(height: 20),
               ],
             ),
@@ -286,12 +300,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   await auth.signout(); // Call the signout method
                   // Optionally, navigate back to the login screen
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()), // Make sure to import your LoginScreen
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
                 child: const Text(
                   "Logout",
-                  style: TextStyle(color: Colors.red, fontSize: 18), // Customize the text style
+                  style: TextStyle(color: Color.fromARGB(255, 249, 77, 64),
+                  fontWeight: FontWeight.bold,fontSize: 18),
                 ),
               ),
             ],
