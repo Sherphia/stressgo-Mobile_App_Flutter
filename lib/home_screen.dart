@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:stressgo/heart_rate_input.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,6 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
         curve: Curves.easeInOut,
       );
     });
+  }
+
+  // New function to recommend a song based on heartbeat
+  void _recommendSong() {
+    // Placeholder for song recommendation logic
+    print("Recommending a song based on heartbeat...");
+    // You can later implement the logic to get heartbeat data and recommend a song here.
   }
 
   @override
@@ -163,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 50,
                 ),
               ),
-              // Removed the white background; spacing now uses SizedBox only
               // Conditionally show the hidden options
               if (_showOptions) ...[
                 // Streak Counter
@@ -216,6 +223,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: const Text("More Exercises"),
                     ),
+                    const SizedBox(height: 15),
+                    ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HeartRateInput()), // Navigate to the new screen
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 116, 169, 243),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      textStyle: const TextStyle(fontSize: 18),
+                    ),
+                    child: const Text("Recommend a Song"),
+                  ),
                   ],
                 ),
                 const SizedBox(height: 20),
