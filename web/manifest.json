@@ -1,6 +1,6 @@
 {
-    "name": "stress_go",
-    "short_name": "stress_go",
+    "name": "stressgo",
+    "short_name": "stressgo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

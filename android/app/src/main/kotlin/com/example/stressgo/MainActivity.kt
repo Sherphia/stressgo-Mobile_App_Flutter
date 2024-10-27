@@ -1,4 +1,4 @@
-package com.example.stress_go
+package com.example.stressgo
 
 import io.flutter.embedding.android.FlutterActivity
 

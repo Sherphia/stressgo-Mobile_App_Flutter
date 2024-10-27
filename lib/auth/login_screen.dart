@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:stress_go/auth/auth_service.dart';
-import 'package:stress_go/auth/signup_screen.dart';
-import 'package:stress_go/home_screen.dart';
+import 'package:stressgo/auth/auth_service.dart';
+import 'package:stressgo/auth/signup_screen.dart';
+import 'package:stressgo/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

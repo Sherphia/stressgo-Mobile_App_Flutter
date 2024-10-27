@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:stress_go/auth/auth_service.dart';
-import 'package:stress_go/home_screen.dart';
+import 'package:stressgo/auth/auth_service.dart';
+import 'package:stressgo/home_screen.dart';
 import 'login_screen.dart'; // Import your login screen
 
 class SignUpScreen extends StatefulWidget {

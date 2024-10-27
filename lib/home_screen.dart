@@ -1,316 +1,254 @@
-import 'package:flutter_svg/svg.dart';
-import 'auth/auth_service.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // For stylish fonts
 import 'package:lottie/lottie.dart';
-import 'auth/login_screen.dart'; // For GIF-like animations
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final AuthService auth = AuthService();
-  int streakCount = 5; // Example streak count
-  int heartRate = 72; // Simulated heart rate
-  bool isExpanded = false; // For scroll-down functionality
-  final ScrollController _scrollController = ScrollController(); // Create a ScrollController
+  final ScrollController _scrollController = ScrollController();
+  bool _showOptions = false;
+
+  // Function to generate a random gradient background
+  List<Color> _generateRandomGradient() {
+    List<Color> gradientColors = [
+      Colors.purple,
+      Colors.blue,
+      Colors.cyan,
+      Colors.green,
+      Colors.pink,
+      Colors.orange,
+      Colors.yellow
+    ];
+    gradientColors.shuffle(Random());
+    return [gradientColors[0], gradientColors[1]];
+  }
+
+  void _scrollToBottom() {
+    setState(() {
+      _showOptions = true; // Show options after scrolling
+    });
+    Future.delayed(const Duration(milliseconds: 200), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stress Go'),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurpleAccent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            _openMenu(context);
-          },
+        backgroundColor: Colors.deepPurple,
+        title: const Text("Stress Go"),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              // Properly open the drawer using the Builder context
+              Scaffold.of(context).openDrawer();
+            },
+          ),
         ),
       ),
-      body: Stack(
-        children: [
-          // Background gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.deepPurple, Colors.blueAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+      drawer: Drawer(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.cyan, Colors.blueAccent],
             ),
           ),
-          // Main content
-          SingleChildScrollView(
-            controller: _scrollController, // Assign the ScrollController
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                // Welcome text and smiling profile icon
-                Column(
-                  children: [
-                    Text(
-                      "Welcome back, User",
-                      style: GoogleFonts.poppins(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 10), // Add some spacing
-                    ClipOval(
-                      child: Image.asset(
-                        'assets/profile.png', // Your profile image
-                        width: 100, // Set your desired width
-                        height: 100, // Set your desired height
-                        fit: BoxFit.cover, // Ensure the image covers the circular area
-                      ),
-                    ),
-                  ],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const UserAccountsDrawerHeader(
+                accountName: Text("Username"),
+                accountEmail: Text("user@example.com"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: AssetImage('assets/profile.png'),
                 ),
-                const SizedBox(height: 10),
-                // Streak Counter with animation progress bar
-                Column(
-                  children: [
-                    const SizedBox(height: 10), // Add spacing
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/fire.svg', // Your SVG file path
-                          width: 50, // Set desired width for the icon
-                          height: 50, // Set desired height for the icon
-                        ),
-                        const SizedBox(width: 10), // Add spacing
-                        Text(
-                          "$streakCount", // Display the streak count
-                          style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2), // Add spacing
-                    Text(
-                      "Days Logged In",
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple,
                 ),
-                const SizedBox(height: 1),
-                // Meditating girl GIF
-                GestureDetector(
-                  onTap: () {
-                    // Action when meditating girl GIF is clicked
-                  },
-                  child: Lottie.asset(
-                    'assets/meditating_girl.json', // Place a meditating girl GIF/animation file here
-                    height: 190, // Adjust height as needed
-                    width: 200,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                const SizedBox(height: 1),
-                // Scroll down GIF button (placed between meditating girl and the row of GIFs)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isExpanded = !isExpanded; // Toggle the expanded state
-                    });
-                    // Scroll down to the next section when GIF is tapped
-                    if (isExpanded) {
-                      _scrollController.animateTo(
-                        _scrollController.position.pixels + 500, // Adjust scroll amount
-                        duration: const Duration(milliseconds: 350),
-                        curve: Curves.easeInOut,
-                      );
-                    }
-                  },
-                  child: Lottie.asset(
-                    'assets/scroll_down_gif.json', // Place a scroll-down GIF/animation file here
-                    height: 70,
-                    width: 30,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                // Expanded content when the scroll-down GIF is pressed
-                if (isExpanded)
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space them evenly
-                        children: [
-                          // First column: Breathing Test GIF and Text
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  // Breathing Test functionality here
-                                },
-                                child: Image.asset(
-                                  'assets/breathing_test.gif', // Your GIF file path
-                                  width: 150, // Adjust size for each GIF
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(height: 10), // Spacing between GIF and text
-                              const Text(
-                                'Breathing Test',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Second column: Music GIF and Text
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  // Spotify integration functionality here
-                                },
-                                child: Image.asset(
-                                  'assets/music.gif', // Path to your music GIF
-                                  width: 150, // Adjust size for each GIF
-                                  height: 150,
-                                ),
-                              ),
-                              const SizedBox(height: 10), // Spacing between GIF and text
-                              const Text(
-                                'Music',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      // Additional content after scrolling down
-                      _expandedSection(),
-                    ],
-                  ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-          // Chat icon at the bottom right corner
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: GestureDetector(
-              onTap: () {
-                // Action to open chat
-              },
-              child: Lottie.asset(
-              'assets/chatbot.json', // Path to your chatbot animation JSON file
-                width: 60, // Set the width of the chat icon
-                height: 60, // Set the height of the chat icon
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Additional content after scrolling down
-  Widget _expandedSection() {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            // More exercises here
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.deepPurpleAccent,
-            backgroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-            textStyle: const TextStyle(fontSize: 18),
-          ),
-          child: const Text('More Exercises'),
-        ),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  // Side menu
-  void _openMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          color: Colors.deepPurple,
-          child: Column(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.account_circle, color: Colors.white),
-                title: const Text("Profile", style: TextStyle(color: Colors.white)),
-                onTap: () {
-                  // Navigate to profile
-                },
               ),
               ListTile(
-                leading: const Icon(Icons.gamepad, color: Colors.white),
-                title: const Text("Go Games", style: TextStyle(color: Colors.white)),
+                leading: const Icon(Icons.games, color: Colors.white),
+                title: const Text("Go Games"),
                 onTap: () {
-                  // Navigate to games
+                  // Handle Go Games action
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.language, color: Colors.white),
-                title: const Text("Language", style: TextStyle(color: Colors.white)),
+                title: const Text("Language"),
                 onTap: () {
-                  // Change language
+                  // Handle Language action
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.palette, color: Colors.white),
+                title: const Text("Theme"),
+                onTap: () {
+                  // Handle Theme action
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.watch, color: Colors.white),
-                title: const Text("Connect Smart Watch", style: TextStyle(color: Colors.white)),
+                title: const Text("Connect Smart Watch"),
                 onTap: () {
-                  // Connect to smart watch
+                  // Handle Connect Smart Watch action
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.brightness_6, color: Colors.white),
-                title: const Text("Theme", style: TextStyle(color: Colors.white)),
+                leading: const Icon(Icons.logout, color: Colors.redAccent),
+                title: const Text("Logout"),
                 onTap: () {
-                  // Change theme
+                  // Handle logout
                 },
-              ),
-              TextButton(
-                onPressed: () async {
-                  await auth.signout(); // Call the signout method
-                  // Optionally, navigate back to the login screen
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
-                },
-                child: const Text("Logout", style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: _generateRandomGradient(),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              const SizedBox(height: 30),
+              // Welcome message with profile picture
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundImage: AssetImage('assets/profile.png'),
+                    radius: 30,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Welcome, User!",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Meditating girl animation
+              Lottie.asset(
+                'assets/meditating_girl.json',
+                height: 150,
+              ),
+              const SizedBox(height: 20),
+              // Scroll down animation to reveal hidden options
+              GestureDetector(
+                onTap: _scrollToBottom,
+                child: Lottie.asset(
+                  'assets/scroll_down_gif.json',
+                  height: 50,
+                ),
+              ),
+              // Removed the white background; spacing now uses SizedBox only
+              // Conditionally show the hidden options
+              if (_showOptions) ...[
+                // Streak Counter
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.local_fire_department, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text(
+                        "Streak: 1 day",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Breathing Test and Exercise options
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Breathing Test action
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 116, 169, 243),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        textStyle: const TextStyle(fontSize: 18),
+                      ),
+                      child: const Text("Start Breathing Test"),
+                    ),
+                    const SizedBox(height: 15),
+                    ElevatedButton(
+                      onPressed: () {
+                        // More Exercises action
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 116, 169, 243),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        textStyle: const TextStyle(fontSize: 18),
+                      ),
+                      child: const Text("More Exercises"),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Additional exercises and options section
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to additional exercises page
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 116, 169, 243),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      "Additional Exercises",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Open Chatbot
+        },
+        backgroundColor: Colors.deepPurple,
+        child: const Icon(Icons.chat),
+      ),
     );
   }
 }
